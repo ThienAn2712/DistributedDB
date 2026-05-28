@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mongo-primary:
+    image: mongo:latest
+    container_name: rs-primary
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+    ports:
+      - "27021:27017"
+    volumes:
+      - rs-primary-data:/data/db
+    networks:
+      - repl_net
+
+  mongo-secondary:
+    image: mongo:latest
+    container_name: rs-secondary
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+    ports:
+      - "27022:27017"
+    volumes:
+      - rs-secondary-data:/data/db
+    networks:
+      - repl_net
+
+  mongo-arbiter:
+    image: mongo:latest
+    container_name: rs-arbiter
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+    ports:
+      - "27023:27017"
+    networks:
+      - repl_net
+
+networks:
+  repl_net:
+    driver: bridge
+
+volumes:
+  rs-primary-data:
+  rs-secondary-data:
